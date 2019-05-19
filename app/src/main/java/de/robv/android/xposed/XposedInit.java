@@ -66,7 +66,8 @@ import static de.robv.android.xposed.XposedHelpers.setStaticObjectField;
 	private static final boolean startsSystemServer = XposedBridge.startsSystemServer();
 	private static final String startClassName = XposedBridge.getStartClassName();
 
-	private static final String INSTALLER_PACKAGE_NAME = "de.robv.android.xposed.installer";
+	private static final String INSTALLER_PACKAGE_NAME = "info.loveai.peach.installer";
+	// private static final String INSTALLER_PACKAGE_NAME = "de.robv.android.xposed.installer";
 	@SuppressLint("SdCardPath")
 	private static final String BASE_DIR = Build.VERSION.SDK_INT >= 24
 			? "/data/user_de/0/" + INSTALLER_PACKAGE_NAME + "/"
@@ -132,6 +133,8 @@ import static de.robv.android.xposed.XposedHelpers.setStaticObjectField;
 				lpparam.appInfo = appInfo;
 				lpparam.isFirstApplication = true;
 				XC_LoadPackage.callAll(lpparam);
+
+				Log.d(TAG,"pkg:" + reportedPackageName + "|target:" + INSTALLER_PACKAGE_NAME);
 
 				if (reportedPackageName.equals(INSTALLER_PACKAGE_NAME))
 					hookXposedInstaller(lpparam.classLoader);
@@ -424,6 +427,7 @@ import static de.robv.android.xposed.XposedHelpers.setStaticObjectField;
 
 	private static void hookXposedInstaller(ClassLoader classLoader) {
 		try {
+			Log.d(TAG,"hookXpoedInstaller start...");
 			findAndHookMethod(INSTALLER_PACKAGE_NAME + ".XposedApp", classLoader, "getActiveXposedVersion",
 					XC_MethodReplacement.returnConstant(XposedBridge.getXposedVersion()));
 
@@ -439,6 +443,7 @@ import static de.robv.android.xposed.XposedHelpers.setStaticObjectField;
 					}
 				}
 			});
+			Log.d(TAG,"hookXpoedInstaller end.");
 		} catch (Throwable t) { Log.e(TAG, "Could not hook Xposed Installer", t); }
 	}
 

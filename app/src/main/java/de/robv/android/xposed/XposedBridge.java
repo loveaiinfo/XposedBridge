@@ -309,12 +309,14 @@ public final class XposedBridge {
 		AdditionalHookInfo additionalInfo = (AdditionalHookInfo) additionalInfoObj;
 
 		if (disableHooks) {
+			Log.d(TAG,"disableHooks is true");
 			try {
 				return invokeOriginalMethodNative(method, originalMethodId, additionalInfo.parameterTypes,
 						additionalInfo.returnType, thisObject, args);
 			} catch (InvocationTargetException e) {
 				throw e.getCause();
 			}
+			
 		}
 
 		Object[] callbacksSnapshot = additionalInfo.callbacks.getSnapshot();
